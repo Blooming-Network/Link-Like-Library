@@ -1,0 +1,44 @@
+---
+import Layout from "./Layout.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+}
+
+const { title, description, date } = Astro.props;
+
+const formattedDate = date.toLocaleDateString("ja-JP", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<Layout>
+  <div class="min-h-screen bg-base-100">
+    <div class="max-w-3xl mx-auto px-6 py-12">
+      <nav class="mb-8">
+        <a href="/posts" class="link link-hover text-sm text-base-content/60">
+          ← 記事一覧に戻る
+        </a>
+      </nav>
+
+      <header class="mb-10">
+        <time
+          class="text-sm text-base-content/50"
+          datetime={date.toISOString()}
+        >
+          {formattedDate}
+        </time>
+        <h1 class="text-4xl font-bold mt-2 mb-3">{title}</h1>
+        <p class="text-base-content/60 text-lg">{description}</p>
+      </header>
+
+      <article class="prose prose-lg max-w-none">
+        <slot />
+      </article>
+    </div>
+  </div>
+</Layout>

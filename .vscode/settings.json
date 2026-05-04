@@ -3,5 +3,8 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
-  }
+  },
+  "eslint.probe": ["javascript", "typescript", "astro"],
+  "eslint.validate": ["javascript", "typescript", "astro"],
+  "eslint.useFlatConfig": true
 }
