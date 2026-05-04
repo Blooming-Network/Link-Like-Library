@@ -1,0 +1,38 @@
+[tools]
+node = "22.12.0"
+pnpm = "10.33.2"
+
+[hooks]
+postinstall = "pnpm install"
+
+[tasks.dev]
+run = "pnpm astro dev"
+description = "Start dev server"
+
+[tasks.build]
+run = "pnpm astro build"
+description = "Build static site"
+
+[tasks.preview]
+run = "pnpm astro preview"
+description = "Preview built site"
+
+[tasks.typecheck]
+run = "pnpm astro check"
+description = "Run TypeScript type checking"
+
+[tasks.lint]
+run = "pnpm exec eslint ."
+description = "Run ESLint"
+
+[tasks."lint:fix"]
+run = "pnpm exec eslint . --fix"
+description = "Run ESLint with auto-fix"
+
+[tasks.format]
+run = "pnpm exec prettier --write ."
+description = "Format files with Prettier"
+
+[tasks."format:check"]
+run = "pnpm exec prettier --check ."
+description = "Check formatting with Prettier"
