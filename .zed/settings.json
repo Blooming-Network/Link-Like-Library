@@ -3,7 +3,8 @@
   "lsp": {
     "eslint": {
       "settings": {
-        "workingDirectory": { "mode": "auto" }
+        "workingDirectory": { "mode": "auto" },
+        "validate": ["javascript", "typescript", "astro"]
       }
     }
   },
