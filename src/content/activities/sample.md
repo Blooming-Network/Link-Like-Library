@@ -1,6 +1,6 @@
 ---
-title: "Markdownサンプル"
-description: "Markdownの主要な記法を一通り確認するためのサンプルページです。"
+title: "活動記録サンプル"
+description: "活動記録ページのMarkdownレンダリング確認用サンプル記事です。"
 date: 2026-05-04
 ---
 
@@ -42,7 +42,7 @@ date: 2026-05-04
 ## コードブロック
 
 ```typescript
-interface Post {
+interface Activity {
   title: string;
   description: string;
   date: Date;
@@ -58,9 +58,8 @@ function formatDate(date: Date): string {
 ```
 
 ```css
-.prose {
-  max-width: 65ch;
-  color: var(--tw-prose-body);
+.article-body {
+  color: var(--c-text-primary);
 }
 ```
 

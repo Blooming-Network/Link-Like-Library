@@ -6,6 +6,13 @@
         "workingDirectory": { "mode": "auto" },
         "validate": ["javascript", "typescript", "astro"]
       }
+    },
+    "vscode-css-language-server": {
+      "settings": {
+        "css": { "lint": { "unknownAtRules": "ignore" } },
+        "scss": { "lint": { "unknownAtRules": "ignore" } },
+        "less": { "lint": { "unknownAtRules": "ignore" } }
+      }
     }
   },
   "languages": {

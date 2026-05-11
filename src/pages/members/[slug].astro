@@ -1,0 +1,64 @@
+---
+import type { InferGetStaticPropsType } from "astro";
+import { getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("members");
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+const { entry } = Astro.props as Props;
+const { Content } = await render(entry);
+
+const initial = (name: string): string => {
+  const trimmed = name.trim();
+  return trimmed.length > 0 ? Array.from(trimmed)[0] : "?";
+};
+---
+
+<Layout title={entry.data.name} description={entry.data.description}>
+  <main class="page-shell">
+    <nav
+      class="breadcrumb"
+      aria-label="パンくずリスト"
+      style="margin-bottom: 16px;"
+    >
+      <a href="/">ホーム</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="/members">メンバー</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>{entry.data.name}</span>
+    </nav>
+
+    <header class="member-profile">
+      <div class="author-avatar author-avatar-lg">
+        {
+          entry.data.image ? (
+            <img src={entry.data.image} alt={entry.data.name} />
+          ) : (
+            initial(entry.data.name)
+          )
+        }
+      </div>
+      <div class="member-profile-info">
+        <h1 class="member-profile-name">{entry.data.name}</h1>
+        <div class="author-tags">
+          <span class="author-tag">{entry.data.unit}</span>
+          <span class="author-tag author-tag-generation">
+            {entry.data.generation}
+          </span>
+        </div>
+        <p class="member-profile-description">{entry.data.description}</p>
+      </div>
+    </header>
+
+    <article class="article-body">
+      <Content />
+    </article>
+  </main>
+</Layout>

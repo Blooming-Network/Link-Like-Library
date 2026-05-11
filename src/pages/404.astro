@@ -1,0 +1,41 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+  title="ページが見つかりません"
+  description="お探しのページが見つかりませんでした。"
+>
+  <main class="page-shell">
+    <div class="empty-state error-state">
+      <div class="empty-icon error-icon">404</div>
+      <p class="empty-title">ページが見つかりません</p>
+      <p class="empty-body">
+        お探しのページは移動または削除されたか、URLが間違っている可能性があります。
+      </p>
+      <a href="/" class="preview-btn preview-btn-primary">ホームへ戻る</a>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .error-state {
+    padding: 64px 24px;
+    max-width: 560px;
+    margin: 24px auto 0;
+  }
+
+  .error-icon {
+    width: auto;
+    height: auto;
+    padding: 8px 22px;
+    border-radius: 999px;
+    background: var(--c-decor-petal);
+    color: var(--c-text-brand);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+
+</style>
