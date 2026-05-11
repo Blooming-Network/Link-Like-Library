@@ -6,11 +6,7 @@
     "node": "22.12.0"
   },
   "dependencies": {
-    "@tailwindcss/typography": "^0.5.19",
-    "@tailwindcss/vite": "^4.2.4",
-    "astro": "^6.1.10",
-    "daisyui": "^5.5.19",
-    "tailwindcss": "^4.2.4"
+    "astro": "^6.1.10"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
