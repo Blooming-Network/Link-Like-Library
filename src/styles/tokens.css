@@ -1,0 +1,24 @@
+:root {
+  --c-surface-base: #f9e9e7;
+  --c-surface-subtle: #fdf3f1;
+  --c-surface-raised: #ffffff;
+  --c-surface-sunken: #f0d9d5;
+  --c-text-primary: #3d2a28;
+  --c-text-secondary: #7a5e5b;
+  --c-text-muted: #a8908d;
+  --c-text-brand: #be1400;
+  --c-brand-primary: #e85a8a;
+  --c-brand-secondary: #7bc47f;
+  --c-brand-accent: #c2e07a;
+  --c-decor-cream: #f4ddc8;
+  --c-decor-sky: #6fcfe0;
+  --c-decor-petal: #fbc9d2;
+  --c-state-success: #5faa70;
+  --c-state-warning: #e8a23c;
+  --c-state-error: #be1400;
+  --c-state-info: #6fcfe0;
+
+  --font-sans-jp:
+    "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui,
+    sans-serif;
+}

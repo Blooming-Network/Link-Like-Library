@@ -1,0 +1,36 @@
+---
+const items = [
+  { label: "ホーム", href: "/" },
+  { label: "活動記録", href: "/activities" },
+  { label: "With x Meets", href: "/withxmeets" },
+  { label: "メンバー", href: "/members" },
+];
+
+const current = Astro.url.pathname;
+const isActive = (href: string): boolean => {
+  if (href === "/") {
+    return current === "/" || current === "";
+  }
+  return current === href || current.startsWith(`${href}/`);
+};
+---
+
+<header class="site-header">
+  <a href="/" class="site-logo">Link Like Library</a>
+  <nav class="site-nav" aria-label="グローバルナビゲーション">
+    {
+      items.map((i) => (
+        <a
+          href={i.href}
+          class:list={[
+            "site-nav-link",
+            isActive(i.href) && "site-nav-link-active",
+          ]}
+          aria-current={isActive(i.href) ? "page" : undefined}
+        >
+          {i.label}
+        </a>
+      ))
+    }
+  </nav>
+</header>

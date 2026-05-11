@@ -1,0 +1,63 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+const entries = (await getCollection("members")).sort((a, b) => {
+  const generationDiff = a.data.generation.localeCompare(
+    b.data.generation,
+    "ja",
+  );
+  if (generationDiff !== 0) return generationDiff;
+  return a.data.name.localeCompare(b.data.name, "ja");
+});
+
+const initial = (name: string): string => {
+  const trimmed = name.trim();
+  return trimmed.length > 0 ? Array.from(trimmed)[0] : "?";
+};
+---
+
+<Layout
+  title="メンバー"
+  description="蓮ノ空女学院スクールアイドルクラブのメンバー紹介ページです。"
+>
+  <main class="page-shell">
+    <header class="page-header">
+      <h1 class="page-title">メンバー</h1>
+      <p class="page-lead">所属ユニット・期生ごとにメンバーをご紹介します。</p>
+    </header>
+
+    {
+      entries.length === 0 ? (
+        <div class="empty-state">
+          <div class="empty-icon">＊</div>
+          <p class="empty-title">まだメンバー情報がありません</p>
+        </div>
+      ) : (
+        <section class="article-grid">
+          {entries.map((entry) => (
+            <a href={`/members/${entry.id}`} class="author-card">
+              <div class="author-avatar">
+                {entry.data.image ? (
+                  <img src={entry.data.image} alt={entry.data.name} />
+                ) : (
+                  initial(entry.data.name)
+                )}
+              </div>
+              <div class="author-info">
+                <p class="author-name">{entry.data.name}</p>
+                <p class="author-bio">{entry.data.description}</p>
+                <div class="author-tags">
+                  <span class="author-tag">{entry.data.unit}</span>
+                  <span class="author-tag author-tag-generation">
+                    {entry.data.generation}
+                  </span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </section>
+      )
+    }
+  </main>
+</Layout>

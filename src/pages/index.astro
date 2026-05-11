@@ -1,11 +1,154 @@
 ---
-import Welcome from "../components/Welcome.astro";
+import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const [activities, withxmeets, members] = await Promise.all([
+  getCollection("activities"),
+  getCollection("withxmeets"),
+  getCollection("members"),
+]);
+
+type LatestEntry = {
+  id: string;
+  variant: "activities" | "withxmeets" | "members";
+  categoryLabel: string;
+  title: string;
+  description: string;
+  date: Date;
+  href: string;
+};
+
+const allEntries: LatestEntry[] = [
+  ...activities.map((e) => ({
+    id: e.id,
+    variant: "activities" as const,
+    categoryLabel: "活動記録",
+    title: e.data.title,
+    description: e.data.description,
+    date: e.data.date,
+    href: `/activities/${e.id}`,
+  })),
+  ...withxmeets.map((e) => ({
+    id: e.id,
+    variant: "withxmeets" as const,
+    categoryLabel: "With x Meets",
+    title: e.data.title,
+    description: e.data.description,
+    date: e.data.date,
+    href: `/withxmeets/${e.id}`,
+  })),
+  ...members.map((e) => ({
+    id: e.id,
+    variant: "members" as const,
+    categoryLabel: "メンバー",
+    title: e.data.name,
+    description: e.data.description,
+    date: e.data.date,
+    href: `/members/${e.id}`,
+  })),
+];
+
+const latestEntries = allEntries
+  .sort((a, b) => b.date.getTime() - a.date.getTime())
+  .slice(0, 4);
+
+const categories = [
+  {
+    href: "/activities",
+    label: "活動記録",
+    description: "ライブ・イベント・リリースなどの活動レポート",
+    variant: "activities",
+  },
+  {
+    href: "/withxmeets",
+    label: "With x Meets",
+    description: "メンバーとファンが交流するイベントの記録",
+    variant: "withxmeets",
+  },
+  {
+    href: "/members",
+    label: "メンバー",
+    description: "所属ユニット・期生ごとのメンバー紹介",
+    variant: "members",
+  },
+];
 ---
 
-<Layout>
-  <Welcome />
+<Layout
+  description="蓮ノ空女学院スクールアイドルクラブの活動・With x Meets・メンバーをまとめた、Link Like Library のホームです。"
+>
+  <main class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow">ホーム</p>
+      <h1 class="page-title">Link Like Library</h1>
+    </header>
+
+    <section class="home-section">
+      <h2 class="home-section-title">Link Like Libraryとは</h2>
+      <p class="home-section-text">
+        蓮ノ空女学院スクールアイドルクラブの活動記録・With x
+        Meets・メンバーを「蓮ノ空のこと好き好きクラブ」の視点から書き記すファンサイトです
+      </p>
+    </section>
+
+    <section class="home-section">
+      <h2 class="home-section-title">新着記事</h2>
+      {
+        latestEntries.length === 0 ? (
+          <div class="empty-state">
+            <div class="empty-icon">＊</div>
+            <p class="empty-title">まだ記事がありません</p>
+          </div>
+        ) : (
+          <div class="article-grid article-grid-compact">
+            {latestEntries.map((entry) => (
+              <a href={entry.href} class="article-card">
+                <div
+                  class={`article-card-thumb article-card-thumb-${entry.variant}`}
+                />
+                <div class="article-card-body">
+                  <span
+                    class={`article-category article-category-${entry.variant}`}
+                  >
+                    {entry.categoryLabel}
+                  </span>
+                  <h3 class="article-card-title">{entry.title}</h3>
+                  <p class="article-card-excerpt">{entry.description}</p>
+                  <time
+                    class="article-card-date"
+                    datetime={entry.date.toISOString()}
+                  >
+                    {entry.date.toLocaleDateString("ja-JP", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </time>
+                </div>
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </section>
+
+    <section class="home-section">
+      <h2 class="home-section-title">カテゴリ別記事一覧</h2>
+      <div class="category-link-grid">
+        {
+          categories.map((c) => (
+            <a href={c.href} class={`category-link category-link-${c.variant}`}>
+              <div class="category-link-body">
+                <p class="category-link-title">{c.label}</p>
+                <p class="category-link-desc">{c.description}</p>
+              </div>
+              <span class="category-link-arrow" aria-hidden="true">
+                →
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </main>
 </Layout>
