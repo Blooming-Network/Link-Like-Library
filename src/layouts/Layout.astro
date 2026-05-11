@@ -1,5 +1,14 @@
 ---
 import "../styles/global.css";
+import SiteHeader from "../components/SiteHeader.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const fullTitle = title ? `${title} | Link Like Library` : "Link Like Library";
 ---
 
 <!doctype html>
@@ -10,18 +19,11 @@ import "../styles/global.css";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
+    {description && <meta name="description" content={description} />}
+    <title>{fullTitle}</title>
   </head>
   <body>
+    <SiteHeader />
     <slot />
   </body>
 </html>
-
-<style>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>

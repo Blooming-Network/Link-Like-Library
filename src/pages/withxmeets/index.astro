@@ -1,0 +1,62 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+const entries = (await getCollection("withxmeets")).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+
+const thumbVariants = [
+  "article-card-thumb-b",
+  "article-card-thumb-a",
+  "article-card-thumb-c",
+] as const;
+---
+
+<Layout
+  title="With x Meets"
+  description="メンバーとファンが交流できるリアルタイムイベント With x Meets に関する記事一覧です。"
+>
+  <main class="page-shell">
+    <header class="page-header">
+      <h1 class="page-title">With x Meets</h1>
+      <p class="page-lead">
+        メンバーとファンが交流できるリアルタイムイベント With x
+        Meetsに関する記事一覧です。
+      </p>
+    </header>
+
+    {
+      entries.length === 0 ? (
+        <div class="empty-state">
+          <div class="empty-icon">＊</div>
+          <p class="empty-title">まだ記事がありません</p>
+        </div>
+      ) : (
+        <section class="article-grid">
+          {entries.map((entry, i) => (
+            <a href={`/withxmeets/${entry.id}`} class="article-card">
+              <div
+                class={`article-card-thumb ${thumbVariants[i % thumbVariants.length]}`}
+              />
+              <div class="article-card-body">
+                <h2 class="article-card-title">{entry.data.title}</h2>
+                <p class="article-card-excerpt">{entry.data.description}</p>
+                <time
+                  class="article-card-date"
+                  datetime={entry.data.date.toISOString()}
+                >
+                  {entry.data.date.toLocaleDateString("ja-JP", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </time>
+              </div>
+            </a>
+          ))}
+        </section>
+      )
+    }
+  </main>
+</Layout>
