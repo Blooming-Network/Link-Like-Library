@@ -19,6 +19,11 @@ const withxmeets = defineCollection({
     date: z.coerce.date(),
     members: z.array(z.string()),
     youtubeId: z.string().optional(),
+    features: z.array(z.object({
+      key: z.string(),
+      items: z.array(z.string()).optional().default([]),
+    })).optional(),
+
   }),
 });
 

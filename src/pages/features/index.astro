@@ -1,0 +1,55 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+const withxmeets = await getCollection("withxmeets");
+const features = withxmeets.reduce((keyList, wm) => {
+  if (wm.data.features) {
+    for (let feature of wm.data.features) {
+      if (!keyList.includes(feature.key)) {
+        keyList.push(feature.key);
+      }
+    }  
+  }
+  return keyList;
+}, []);
+
+const thumbVariants = [
+  "article-card-thumb-b",
+  "article-card-thumb-a",
+  "article-card-thumb-c",
+] as const;
+---
+
+<Layout
+  title="特集"
+  description="動画につけられた特集"
+>
+  <main class="page-shell">
+    <header class="page-header">
+      <h1 class="page-title">特集</h1>
+      <p class="page-lead">With×MEETS の特集一覧です</p>
+    </header>
+    {
+      features.length === 0 ? (
+        <div class="empty-state">
+          <div class="empty-icon">＊</div>
+          <p class="empty-title">特集はありません。</p>
+        </div>
+      ) : (
+        <section class="article-grid">
+          {features.map((feature, i) => (
+            <a href={`/features/${feature}`} class="article-card">
+              <div
+                class={`article-card-thumb ${thumbVariants[i % thumbVariants.length]}`}
+              />
+              <div class="article-card-body">
+                <h2 class="article-card-title">{feature}</h2>
+              </div>
+            </a>
+          ))}
+        </section>
+      )
+    }
+  </main>
+</Layout>
