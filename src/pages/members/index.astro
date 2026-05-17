@@ -1,15 +1,9 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
+import { sortMembers } from "../../utils/sorter";
 
-const entries = (await getCollection("members")).sort((a, b) => {
-  const generationDiff = a.data.generation.localeCompare(
-    b.data.generation,
-    "ja",
-  );
-  if (generationDiff !== 0) return generationDiff;
-  return a.data.name.localeCompare(b.data.name, "ja");
-});
+const entries = sortMembers(await getCollection("members"));
 
 const initial = (name: string): string => {
   const trimmed = name.trim();

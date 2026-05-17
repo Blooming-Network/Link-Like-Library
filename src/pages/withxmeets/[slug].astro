@@ -2,6 +2,7 @@
 import type { InferGetStaticPropsType } from "astro";
 import { getCollection, render } from "astro:content";
 import MarkdownLayout from "../../layouts/MarkdownLayout.astro";
+import { sortMembers } from "../../utils/sorter";
 
 export async function getStaticPaths() {
   const [members, entries] = await Promise.all([
@@ -11,13 +12,13 @@ export async function getStaticPaths() {
 
 
   return entries.map((entry) => {
-    const appearedMembers = members.filter((member) => (
+    const appearedMembers = sortMembers(members.filter((member) => (
       entry.data.members.includes(member.data.name)    
-    ));
+    )));
 
     return {
       params: { slug: entry.id },
-      props: { entry, appearedMembers: appearedMembers },
+      props: { entry, appearedMembers },
     }
   });
 }
