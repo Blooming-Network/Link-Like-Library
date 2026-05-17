@@ -17,6 +17,8 @@ const withxmeets = defineCollection({
     title: z.string(),
     description: z.string(),
     date: z.coerce.date(),
+    members: z.array(z.string()),
+    youtubeId: z.string().optional(),
   }),
 });
 
@@ -29,6 +31,7 @@ const members = defineCollection({
     image: z.string().optional(),
     description: z.string(),
     date: z.coerce.date(),
+    order: z.number(),  // 並び順 
   }),
 });
 

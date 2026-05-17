@@ -2,6 +2,7 @@
 title: "第2回 With x Meets アーカイブ"
 description: "第2回 With x Meets のアーカイブ記事サンプルです。"
 date: 2026-04-25
+members: ["大沢 瑠璃乃", "安養寺 姫芽"]
 ---
 
 ## 振り返り

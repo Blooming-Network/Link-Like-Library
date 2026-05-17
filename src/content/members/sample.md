@@ -4,6 +4,7 @@ unit: "スリーズブーケ"
 generation: "104期生"
 description: "メンバープロフィールのサンプルです。所属ユニットや期生情報をfrontmatterで管理します。"
 date: 2026-05-04
+order: 1
 ---
 
 ## プロフィール
