@@ -2,6 +2,7 @@
 title: "第3回 With x Meets 開催レポート"
 description: "第3回 With x Meets の当日レポートサンプルです。"
 date: 2026-05-08
+members: ["大沢 瑠璃乃" , "藤島 慈"]
 ---
 
 ## 開催概要

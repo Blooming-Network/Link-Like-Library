@@ -1,0 +1,94 @@
+---
+import type { InferGetStaticPropsType } from "astro";
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+type WithxmeetsItems = {
+  withxmeets: any;
+  items: string[],
+}
+
+export async function getStaticPaths() {
+  const [withxmeets] = await Promise.all([
+    getCollection('withxmeets'),
+  ]);
+
+
+  // 特集を取得
+  const featureKeys = withxmeets.reduce((featureKeys, wm) => {
+    if (wm.data.features) {
+      for (let f of wm.data.features) {
+        if (!featureKeys.includes(f.key)) {
+          featureKeys.push(f.key);
+        }
+      }  
+    }
+    return featureKeys;
+  }, []);
+
+  // 特集の対象のWithMEETSを取得
+  const getWithxmeetsAndItems = (key) => {
+    let list: WithxmeetsItems[]= [];
+    return withxmeets.reduce((accumulator, wm) => {
+      if (!wm.data.features) return accumulator;
+
+      const feature = wm.data.features.find(f => f.key == key);
+      if (!feature) return accumulator;
+
+      accumulator.push({
+        withxmeets: wm,
+        items: feature.items
+      });
+
+      return accumulator;
+    }, list);
+  }
+
+  return featureKeys.map((key) => ({
+    params:  {slug: key},
+    props: {
+      title: key,
+      withxmeetsAndItems: getWithxmeetsAndItems(key)
+    }
+  }));
+
+}
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+const { title, withxmeetsAndItems } = Astro.props as Props;
+
+---
+
+<Layout title={title} description={title}>
+  <main class="page-shell">
+    <nav
+      class="breadcrumb"
+      aria-label="パンくずリスト"
+      style="margin-bottom: 16px;"
+    >
+      <a href="/">ホーム</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="/features">特集</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>{title}</span>
+    </nav>
+
+    <article class="article-body">
+      <h2>{title}</h2>
+      <div>
+        <dl>
+          {withxmeetsAndItems.map((wmitm) => (
+            <dt>
+              <a href={`/withxmeets/${wmitm.withxmeets.id}`}>{wmitm.withxmeets.data.title}</a>
+            </dt>
+            <dd>
+              <ul>
+                {wmitm.items.map((itm) => (<li>{itm}</li>))}
+              </ul>
+            </dd>
+          ))}
+        </dl>
+      </div>
+    </article>
+  </main>
+</Layout>

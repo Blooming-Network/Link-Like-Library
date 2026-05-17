@@ -4,6 +4,7 @@ unit: "DOLLCHESTRA"
 generation: "103期生"
 description: "2人目のメンバープロフィールサンプルです。所属ユニットや期生が異なる例として用意しています。"
 date: 2026-05-09
+order: 102
 ---
 
 ## プロフィール

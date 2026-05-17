@@ -2,17 +2,29 @@
 import type { InferGetStaticPropsType } from "astro";
 import { getCollection, render } from "astro:content";
 import MarkdownLayout from "../../layouts/MarkdownLayout.astro";
+import { sortMembers } from "../../utils/sorter";
 
 export async function getStaticPaths() {
-  const entries = await getCollection("withxmeets");
-  return entries.map((entry) => ({
-    params: { slug: entry.id },
-    props: { entry },
-  }));
+  const [members, entries] = await Promise.all([
+    getCollection("members"),
+    getCollection('withxmeets'),
+  ]);
+
+
+  return entries.map((entry) => {
+    const appearedMembers = sortMembers(members.filter((member) => (
+      entry.data.members.includes(member.data.name)    
+    )));
+
+    return {
+      params: { slug: entry.id },
+      props: { entry, appearedMembers },
+    }
+  });
 }
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
-const { entry } = Astro.props as Props;
+const { entry, appearedMembers } = Astro.props as Props;
 const { Content } = await render(entry);
 ---
 
@@ -24,4 +36,14 @@ const { Content } = await render(entry);
   backHref="/withxmeets"
 >
   <Content />
+  <h2>出演者</h2>
+  <ul>
+    {appearedMembers.map(m => (
+      <li><a href={`/members/${m.id}/`}>{m.data.name}</a></li>
+    ))}
+  </ul>
+  {entry.data.youtubeId && (
+    <h2>YouTube</h2>
+    <iframe width="560" height="315" src={`https://www.youtube.com/embed/${entry.data.youtubeId}`} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  )}
 </MarkdownLayout>
