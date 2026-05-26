@@ -32,12 +32,12 @@ export async function getStaticPaths() {
     return withxmeets.reduce((accumulator, wm) => {
       if (!wm.data.features) return accumulator;
 
-      const feature = wm.data.features.find(f => f.key == key);
+      const feature = wm.data.features.find(f => f.key === key);
       if (!feature) return accumulator;
 
       accumulator.push({
         withxmeets: wm,
-        items: feature.items
+        items: feature.items ?? []
       });
 
       return accumulator;
