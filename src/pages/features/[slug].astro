@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 
 
   // 特集を取得
-  const featureKeys = withxmeets.reduce((featureKeys, wm) => {
+  const featureKeys = withxmeets.reduce<string[]>((featureKeys, wm) => {
     if (wm.data.features) {
       for (let f of wm.data.features) {
         if (!featureKeys.includes(f.key)) {
@@ -27,7 +27,7 @@ export async function getStaticPaths() {
   }, []);
 
   // 特集の対象のWithMEETSを取得
-  const getWithxmeetsAndItems = (key) => {
+  const getWithxmeetsAndItems = (key: string) => {
     let list: WithxmeetsItems[]= [];
     return withxmeets.reduce((accumulator, wm) => {
       if (!wm.data.features) return accumulator;
