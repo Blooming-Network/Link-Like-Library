@@ -2,6 +2,7 @@
 title: "WithxMeetsサンプル"
 description: "WithxMeets コーナーのサンプル記事です。"
 date: 2026-05-04
+members: ["大沢 瑠璃乃", "藤島 慈", "安養寺 姫芽"]
 ---
 
 ## はじめに
