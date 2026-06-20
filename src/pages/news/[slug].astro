@@ -1,0 +1,31 @@
+---
+import type { InferGetStaticPropsType } from "astro";
+import { getCollection, render } from "astro:content";
+import MarkdownLayout from "../../layouts/MarkdownLayout.astro";
+import { sortMembers } from "../../utils/sorter";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("news");
+
+  return entries.map((entry) => {
+    return {
+      params: { slug: entry.id },
+      props: { entry },
+    }
+  });
+}
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+const { entry } = Astro.props as Props;
+const { Content } = await render(entry);
+---
+
+<MarkdownLayout
+  title={entry.data.title}
+  description={""}
+  date={entry.data.date}
+  sectionLabel="更新履歴"
+  backHref="/news"
+>
+  <Content />
+</MarkdownLayout>

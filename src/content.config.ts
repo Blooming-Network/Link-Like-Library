@@ -65,8 +65,15 @@ const members = defineCollection({
     youtubeId: z.string(),
     order: z.number(),
     image: z.string().optional(),
-    date: z.coerce.date(),
   }),
 });
 
-export const collections = { activities, withxmeets, members };
+const news = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/news" }),
+  schema: z.object({
+    date: z.coerce.date(),
+    title: z.string(),
+  }),
+});
+
+export const collections = { activities, withxmeets, members, news};
