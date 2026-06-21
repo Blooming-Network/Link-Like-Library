@@ -64,6 +64,7 @@ const members = defineCollection({
     url: z.string(),
     youtubeId: z.string(),
     order: z.number(),
+    icon: z.string().optional(),
     image: z.string().optional(),
   }),
 });
