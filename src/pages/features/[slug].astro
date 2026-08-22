@@ -2,6 +2,7 @@
 import type { InferGetStaticPropsType } from "astro";
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
+import { render } from "astro:content";
 
 type WithxmeetsItems = {
   withxmeets: any;
@@ -9,8 +10,9 @@ type WithxmeetsItems = {
 }
 
 export async function getStaticPaths() {
-  const [withxmeets] = await Promise.all([
+  const [withxmeets, entries] = await Promise.all([
     getCollection('withxmeets'),
+    getCollection('features'),
   ]);
 
 
@@ -44,10 +46,18 @@ export async function getStaticPaths() {
     }, list);
   }
 
+  // 特集に対応する記事を取得
+  const getEntry = (key: string) => {
+    return entries.find((entry) => (
+      entry.data.title == key
+    ));
+  }
+
   return featureKeys.map((key) => ({
     params:  {slug: key},
     props: {
       title: key,
+      entry: getEntry(key),
       withxmeetsAndItems: getWithxmeetsAndItems(key)
     }
   }));
@@ -55,7 +65,9 @@ export async function getStaticPaths() {
 }
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
-const { title, withxmeetsAndItems } = Astro.props as Props;
+const { title, entry, withxmeetsAndItems } = Astro.props as Props;
+const Content = entry ? (await render(entry)).Content : null;
+
 
 ---
 
@@ -76,6 +88,10 @@ const { title, withxmeetsAndItems } = Astro.props as Props;
     <article class="article-body">
       <h2>{title}</h2>
       <div>
+        {Content && <Content />}
+      </div>
+      <div>
+        <h2>関連するWith×MEETS</h2>
         <dl>
           {withxmeetsAndItems.map((wmitm) => (
             <dt>

@@ -69,6 +69,14 @@ const members = defineCollection({
   }),
 });
 
+const features = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/features" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+  }),
+});
+
 const news = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/news" }),
   schema: z.object({
@@ -77,4 +85,4 @@ const news = defineCollection({
   }),
 });
 
-export const collections = { activities, withxmeets, members, news};
+export const collections = { activities, withxmeets, members, features, news};
