@@ -1,0 +1,122 @@
+---
+import type { InferGetStaticPropsType } from "astro";
+import { getCollection } from "astro:content";
+import Layout from "../../../layouts/Layout.astro";
+import {
+  createCalendarDays,
+  formatMonth,
+  getAdjacentMonth,
+  getCalendarMonths,
+  getCalendarPath,
+  getJstDateParts,
+  getWeekdayLabels,
+} from "../../../utils/calendar";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("withxmeets");
+
+  return getCalendarMonths().map(({ year, month }) => ({
+    params: { year: String(year), month: formatMonth(month) },
+    props: {
+      year,
+      month,
+      entries: entries.filter((entry) => {
+        const date = getJstDateParts(entry.data.date);
+        return date.year === year && date.month === month;
+      }),
+    },
+  }));
+}
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+const { year, month, entries } = Astro.props as Props;
+const previousMonth = getAdjacentMonth(year, month, -1);
+const nextMonth = getAdjacentMonth(year, month, 1);
+const calendarDays = createCalendarDays(year, month);
+const weekdayLabels = getWeekdayLabels();
+const entriesByDay = Map.groupBy(
+  entries,
+  (entry) => getJstDateParts(entry.data.date).day,
+);
+---
+
+<Layout
+  title={`${year}年${month}月のカレンダー`}
+  description={`${year}年${month}月のWith x Meetsの記事カレンダーです。`}
+>
+  <main class="page-shell">
+    <header class="page-header calendar-page-header">
+      <p class="eyebrow"><a href="/calendar">カレンダー一覧</a></p>
+      <h1 class="page-title">{year}年{month}月</h1>
+    </header>
+
+    <nav class="calendar-navigation" aria-label="月の移動">
+      {
+        previousMonth ? (
+          <a
+            href={getCalendarPath(previousMonth)}
+            class="calendar-navigation-link"
+          >
+            ← {previousMonth.year}年{previousMonth.month}月
+          </a>
+        ) : (
+          <span class="calendar-navigation-placeholder" />
+        )
+      }
+      <a href="/calendar" class="calendar-navigation-index">月一覧</a>
+      {
+        nextMonth ? (
+          <a href={getCalendarPath(nextMonth)} class="calendar-navigation-link">
+            {nextMonth.year}年{nextMonth.month}月 →
+          </a>
+        ) : (
+          <span class="calendar-navigation-placeholder" />
+        )
+      }
+    </nav>
+
+    <div class="calendar-scroll">
+      <section class="calendar-grid" aria-label={`${year}年${month}月`}>
+        {
+          weekdayLabels.map((label) => (
+            <div
+              class:list={[
+                "calendar-weekday",
+                label === "日" && "calendar-weekday-sunday",
+                label === "土" && "calendar-weekday-saturday",
+              ]}
+            >
+              {label}
+            </div>
+          ))
+        }
+        {
+          calendarDays.map((calendarDay) =>
+            calendarDay ? (
+              <div class="calendar-day">
+                <time
+                  class="calendar-day-number"
+                  datetime={calendarDay.isoDate}
+                >
+                  {calendarDay.day}
+                </time>
+                <div class="calendar-day-entries">
+                  {(entriesByDay.get(calendarDay.day) ?? []).map((entry) => (
+                    <a
+                      href={`/withxmeets/${entry.id}`}
+                      class="calendar-entry-link"
+                    >
+                      {entry.data.title}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div class="calendar-day calendar-day-empty" aria-hidden="true" />
+            ),
+          )
+        }
+      </section>
+    </div>
+  </main>
+</Layout>
