@@ -2,7 +2,6 @@
 import type { InferGetStaticPropsType } from "astro";
 import { getCollection, render } from "astro:content";
 import MarkdownLayout from "../../layouts/MarkdownLayout.astro";
-import { sortMembers } from "../../utils/sorter";
 
 export async function getStaticPaths() {
   const entries = await getCollection("news");
