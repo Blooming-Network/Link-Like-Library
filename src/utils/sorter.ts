@@ -1,4 +1,4 @@
-import { CollectionEntry } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 
 /**
  * メンバー情報のソート処理

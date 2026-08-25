@@ -3,7 +3,7 @@ import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 
 const withxmeets = await getCollection("withxmeets");
-const features = withxmeets.reduce((keyList, wm) => {
+const features = withxmeets.reduce<string[]>((keyList, wm) => {
   if (wm.data.features) {
     for (let feature of wm.data.features) {
       if (!keyList.includes(feature.key)) {

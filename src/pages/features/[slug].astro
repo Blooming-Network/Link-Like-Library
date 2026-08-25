@@ -1,11 +1,11 @@
 ---
 import type { InferGetStaticPropsType } from "astro";
-import { getCollection } from "astro:content";
+import { CollectionEntry, getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import { render } from "astro:content";
 
 type WithxmeetsItems = {
-  withxmeets: any;
+  withxmeets: CollectionEntry<"withxmeets">;
   items: string[],
 }
 
