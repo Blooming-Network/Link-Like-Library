@@ -20,13 +20,12 @@ const memberNames = [
 ];
 
 const memberGeneration = [
-  "101期生",  // 沙知
-  "102期生",  // 梢・綴理・慈
-  "103期生",  // 花帆・さやか・瑠璃乃
-  "104期生",  // 吟子・小鈴・姫芽・泉
-  "105期生",  // セラス
-]
-
+  "101期生", // 沙知
+  "102期生", // 梢・綴理・慈
+  "103期生", // 花帆・さやか・瑠璃乃
+  "104期生", // 吟子・小鈴・姫芽・泉
+  "105期生", // セラス
+];
 
 const activities = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/activities" }),
@@ -45,10 +44,14 @@ const withxmeets = defineCollection({
     date: z.coerce.date(),
     members: z.array(z.enum(memberNames)),
     youtubeId: z.string().optional(),
-    features: z.array(z.object({
-      key: z.string(),
-      items: z.array(z.string()).optional().default([]),
-    })).optional(),
+    features: z
+      .array(
+        z.object({
+          key: z.string(),
+          items: z.array(z.string()).optional().default([]),
+        }),
+      )
+      .optional(),
   }),
 });
 
@@ -85,4 +88,4 @@ const news = defineCollection({
   }),
 });
 
-export const collections = { activities, withxmeets, members, features, news};
+export const collections = { activities, withxmeets, members, features, news };

@@ -7,19 +7,18 @@ import { sortMembers } from "../../utils/sorter";
 export async function getStaticPaths() {
   const [members, entries] = await Promise.all([
     getCollection("members"),
-    getCollection('withxmeets'),
+    getCollection("withxmeets"),
   ]);
 
-
   return entries.map((entry) => {
-    const appearedMembers = sortMembers(members.filter((member) => (
-      entry.data.members.includes(member.data.name)    
-    )));
+    const appearedMembers = sortMembers(
+      members.filter((member) => entry.data.members.includes(member.data.name)),
+    );
 
     return {
       params: { slug: entry.id },
       props: { entry, appearedMembers },
-    }
+    };
   });
 }
 
@@ -38,12 +37,27 @@ const { Content } = await render(entry);
   <Content />
   <h2>出演者</h2>
   <ul>
-    {appearedMembers.map(m => (
-      <li><a href={`/members/${m.id}/`}>{m.data.name}</a></li>
-    ))}
+    {
+      appearedMembers.map((m) => (
+        <li>
+          <a href={`/members/${m.id}/`}>{m.data.name}</a>
+        </li>
+      ))
+    }
   </ul>
-  {entry.data.youtubeId && (
-    <h2>YouTube</h2>
-    <iframe class="youtube" src={`https://www.youtube.com/embed/${entry.data.youtubeId}`} title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  )}
+  {
+    entry.data.youtubeId && (
+      <>
+        <h2>YouTube</h2>
+        <iframe
+          class="youtube"
+          src={`https://www.youtube.com/embed/${entry.data.youtubeId}`}
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen={true}
+        />
+      </>
+    )
+  }
 </MarkdownLayout>

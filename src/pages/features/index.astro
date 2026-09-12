@@ -9,7 +9,7 @@ const features = withxmeets.reduce<string[]>((keyList, wm) => {
       if (!keyList.includes(feature.key)) {
         keyList.push(feature.key);
       }
-    }  
+    }
   }
   return keyList;
 }, []);
@@ -21,10 +21,7 @@ const thumbVariants = [
 ] as const;
 ---
 
-<Layout
-  title="特集"
-  description="動画につけられた特集"
->
+<Layout title="特集" description="動画につけられた特集">
   <main class="page-shell">
     <header class="page-header">
       <h1 class="page-title">特集</h1>

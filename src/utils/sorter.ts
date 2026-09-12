@@ -6,7 +6,7 @@ import type { CollectionEntry } from "astro:content";
  * @param members メンバー情報
  * @returns 並び替え済メンバー情報
  */
-export function sortMembers (members: CollectionEntry<"members">[]) {
+export function sortMembers(members: CollectionEntry<"members">[]) {
   return members.sort((a, b) => {
     return a.data.order - b.data.order;
   });

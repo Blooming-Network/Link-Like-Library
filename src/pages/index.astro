@@ -2,11 +2,9 @@
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 
-const news = (await getCollection("news")).sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-)
-.slice(0, 4);
-
+const news = (await getCollection("news"))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 4);
 
 const categories = [
   {
@@ -59,7 +57,6 @@ const categories = [
       </p>
     </section>
 
-
     <section class="home-section">
       <h2 class="home-section-title">カテゴリ別記事一覧</h2>
       <div class="category-link-grid">
@@ -84,32 +81,30 @@ const categories = [
         <h2 class="home-section-title">更新履歴</h2>
       </div>
       <div class="category-link-grid">
-        {news.map((entry) => (
-          <a href={`/news/${entry.id}`} class="article-card">
-            <div class="category-link-body">
-              <time
+        {
+          news.map((entry) => (
+            <a href={`/news/${entry.id}`} class="article-card">
+              <div class="category-link-body">
+                <time
                   class="article-card-date"
                   datetime={entry.data.date.toISOString()}
-              >
-                {entry.data.date.toLocaleDateString("ja-JP", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </time>
-              <p class="category-link-desc">{entry.data.title}</p>
-            </div>
-          </a>
-        ))}
+                >
+                  {entry.data.date.toLocaleDateString("ja-JP", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </time>
+                <p class="category-link-desc">{entry.data.title}</p>
+              </div>
+            </a>
+          ))
+        }
         <a href="/news" class="article-card">
           <div class="category-link-body">
-            <time
-                class="article-card-date"
-            >
-              all
-            </time>
+            <time class="article-card-date"> all </time>
             <p class="category-link-desc">更新履歴一覧</p>
-          </div> 
+          </div>
         </a>
       </div>
     </section>
