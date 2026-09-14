@@ -23,7 +23,7 @@ const categories = [
     href: "/calendar",
     label: "カレンダー",
     description: "With×MEETSをカレンダー形式で表示",
-    variant: "withxmeets",
+    variant: "calendar",
   },
   {
     href: "/members",
@@ -83,7 +83,7 @@ const categories = [
       <div class="category-link-grid">
         {
           news.map((entry) => (
-            <a href={`/news/${entry.id}`} class="article-card">
+            <a href={`/news/${entry.id}`} class="category-link">
               <div class="category-link-body">
                 <time
                   class="article-card-date"
@@ -100,7 +100,7 @@ const categories = [
             </a>
           ))
         }
-        <a href="/news" class="article-card">
+        <a href="/news" class="category-link">
           <div class="category-link-body">
             <time class="article-card-date"> all </time>
             <p class="category-link-desc">更新履歴一覧</p>

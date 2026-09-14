@@ -174,8 +174,16 @@
   border-left: 4px solid #3aab66;
 }
 
+.category-link-calendar {
+  border-left: 4px solid #d9c300;
+}
+
 .category-link-members {
   border-left: 4px solid #d94560;
+}
+
+.category-link-features {
+  border-left: 4px solid #ae00d9;
 }
 
 .category-link-body {
