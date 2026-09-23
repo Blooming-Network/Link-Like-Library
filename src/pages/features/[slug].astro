@@ -48,7 +48,7 @@ export async function getStaticPaths() {
 
   // 特集に対応する記事を取得
   const getEntry = (key: string) => {
-    return entries.find((entry) => entry.data.title == key);
+    return entries.find((entry) => entry.data.title === key);
   };
 
   return featureKeys.map((key) => ({
