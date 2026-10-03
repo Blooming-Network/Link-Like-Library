@@ -1,0 +1,37 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCalendarMonths, getCalendarPath } from "../../utils/calendar";
+
+const monthsByYear = Map.groupBy(getCalendarMonths(), ({ year }) => year);
+---
+
+<Layout
+  title="カレンダー"
+  description="With x Meetsの記事を月ごとに探せるカレンダーです。"
+>
+  <main class="page-shell">
+    <header class="page-header">
+      <h1 class="page-title">カレンダー</h1>
+      <p class="page-lead">表示する月を選択してください。</p>
+    </header>
+
+    <div class="calendar-index">
+      {
+        Array.from(monthsByYear, ([year, months]) => (
+          <section class="calendar-index-year" aria-labelledby={`year-${year}`}>
+            <h2 id={`year-${year}`} class="calendar-index-heading">
+              {year}年
+            </h2>
+            <div class="calendar-index-months">
+              {months.map((month) => (
+                <a href={getCalendarPath(month)} class="calendar-index-link">
+                  {month.month}月
+                </a>
+              ))}
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </main>
+</Layout>

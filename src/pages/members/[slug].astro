@@ -6,20 +6,19 @@ import Layout from "../../layouts/Layout.astro";
 export async function getStaticPaths() {
   const [entries, withxmeets] = await Promise.all([
     getCollection("members"),
-    getCollection('withxmeets'),
+    getCollection("withxmeets"),
   ]);
   withxmeets.sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
 
-
   return entries.map((entry) => {
-    const appearedWithxmeets = withxmeets.filter(wm => 
-      wm.data.members.includes(entry.data.name)
+    const appearedWithxmeets = withxmeets.filter((wm) =>
+      wm.data.members.includes(entry.data.name),
     );
 
     return {
       params: { slug: entry.id },
       props: { entry, appearedWithxmeets },
-    }
+    };
   });
 }
 
@@ -72,11 +71,13 @@ const initial = (name: string): string => {
     <article class="article-body">
       <Content />
       <h2>出演With×MEETS</h2>
-      {appearedWithxmeets.map((wm) => (
-        <li>
-          <a href={`/withxmeets/${wm.id}/`}>{wm.data.title}</a>
-        </li>
-      ))}
+      {
+        appearedWithxmeets.map((wm) => (
+          <li>
+            <a href={`/withxmeets/${wm.id}/`}>{wm.data.title}</a>
+          </li>
+        ))
+      }
     </article>
   </main>
 </Layout>
