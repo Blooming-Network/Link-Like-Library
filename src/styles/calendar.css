@@ -148,6 +148,15 @@
   color: var(--c-text-brand);
 }
 
+.calendar-birthday-link {
+  background: var(--c-decor-petal);
+  border-left-color: var(--c-brand-primary);
+}
+
+.calendar-birthday-link:hover {
+  background: var(--c-surface-sunken);
+}
+
 .calendar-day-empty {
   background: var(--c-surface-subtle);
 }
