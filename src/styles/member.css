@@ -3,6 +3,7 @@
   gap: 14px;
   background: var(--c-surface-raised);
   border: 1px solid var(--c-decor-cream);
+  border-left: 4px solid var(--member-color, var(--c-decor-cream));
   border-radius: 14px;
   padding: 18px;
   text-decoration: none;
