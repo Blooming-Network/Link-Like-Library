@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
+import { getMemberColor } from "../../utils/memberColor";
 import { sortMembers } from "../../utils/sorter";
 
 const entries = sortMembers(await getCollection("members"));
@@ -30,7 +31,11 @@ const initial = (name: string): string => {
       ) : (
         <section class="article-grid">
           {entries.map((entry) => (
-            <a href={`/members/${entry.id}`} class="author-card">
+            <a
+              href={`/members/${entry.id}`}
+              class="author-card"
+              style={`--member-color: ${getMemberColor(entry.data.name)}`}
+            >
               <div class="author-avatar">
                 {entry.data.image ? (
                   <img src={entry.data.image} alt={entry.data.name} />
