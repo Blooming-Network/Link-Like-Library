@@ -81,21 +81,37 @@ function sanitizeTitle(title) {
     .trim();
 }
 
-for (const entry of sortedEntries) {
+// 出力先を全エントリ分先に決めて検査する。
+// 書き込みを始めてから途中で失敗し、一部のファイルだけが生成された状態になるのを防ぐ。
+const jobs = sortedEntries.map((entry) => {
   // ファイル名は YYYYMMDD_title.md（例: 20231207_梢先輩に「気品」を学ぼう！.md）
   const fileName = `${fileDate}_${sanitizeTitle(entry.title)}.md`;
   const outputPath = resolve(contentDir, fileName);
+  return { entry, fileName, outputPath };
+});
 
+const errors = [];
+const seenPaths = new Set();
+for (const { fileName, outputPath } of jobs) {
   if (!outputPath.startsWith(contentDir + "/")) {
-    console.error(`エラー: 不正なファイルパスです: ${fileName}`);
-    exit(1);
+    errors.push(`不正なファイルパスです: ${fileName}`);
+  } else if (seenPaths.has(outputPath)) {
+    errors.push(`同じ日にファイル名が重複するエントリがあります: ${fileName}`);
+  } else if (existsSync(outputPath)) {
+    errors.push(`${outputPath} はすでに存在します。`);
   }
+  seenPaths.add(outputPath);
+}
 
-  if (existsSync(outputPath)) {
-    console.error(`エラー: ${outputPath} はすでに存在します。`);
-    exit(1);
+if (errors.length > 0) {
+  for (const message of errors) {
+    console.error(`エラー: ${message}`);
   }
+  console.error("1件も生成せずに終了します。");
+  exit(1);
+}
 
+for (const { entry, fileName, outputPath } of jobs) {
   // メンバーリスト生成
   const memberNames = entry.member_ids.map((id) => {
     const name = memberMap[id];
