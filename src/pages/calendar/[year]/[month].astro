@@ -119,8 +119,8 @@ const birthdaysByDay = Map.groupBy(
                       href={`/members/${member.id}`}
                       class="calendar-entry-link calendar-birthday-link"
                     >
-                      {member.data.name}{" "}
-                      {getAgeOnBirthday(member.data.birthday, year)}歳誕生日
+                      <span aria-hidden="true">🎂</span> {member.data.name}{" "}
+                      {getAgeOnBirthday(member.data.birthday, year)}歳
                     </a>
                   ))}
                   {(entriesByDay.get(calendarDay.day) ?? []).map((entry) => (
