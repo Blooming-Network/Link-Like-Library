@@ -139,7 +139,8 @@ for (const { entry, fileName, outputPath } of jobs) {
   const youtubeId = entry.youtube_id || "";
 
   const replacements = {
-    "%TITLE%": yamlString(entry.title),
+    // データ上のタイトルに前後の空白が含まれる場合があるため除去する
+    "%TITLE%": yamlString(entry.title.trim()),
     "%DESCRIPTION%": yamlString(descriptionOneLine),
     "%DATE%": yamlString(dateArg),
     "%MEMBERS%": membersYaml,
@@ -160,5 +161,7 @@ for (const { entry, fileName, outputPath } of jobs) {
 
   // ファイル出力
   writeFileSync(outputPath, output, "utf-8");
-  console.log(`出力成功: src/content/withxmeets/${fileName} ${entry.title}`);
+  console.log(
+    `出力成功: src/content/withxmeets/${fileName} ${entry.title.trim()}`,
+  );
 }
