@@ -71,13 +71,15 @@ const initial = (name: string): string => {
     <article class="article-body">
       <Content />
       <h2>出演With×MEETS</h2>
-      {
-        appearedWithxmeets.map((wm) => (
-          <li>
-            <a href={`/withxmeets/${wm.id}/`}>{wm.data.title}</a>
-          </li>
-        ))
-      }
+      <ul>
+        {
+          appearedWithxmeets.map((wm) => (
+            <li>
+              <a href={`/withxmeets/${wm.id}/`}>{wm.data.title}</a>
+            </li>
+          ))
+        }
+      </ul>
     </article>
   </main>
 </Layout>
