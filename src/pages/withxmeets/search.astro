@@ -1,0 +1,109 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+const members = (await getCollection("members")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<Layout
+  title="With×MEETS検索"
+  description="キーワード、期間、出演者からWith×MEETSの記事を検索できます。"
+>
+  <main class="page-shell">
+    <header class="page-header">
+      <p class="eyebrow"><a href="/withxmeets">With×MEETS一覧</a></p>
+      <h1 class="page-title">With×MEETS検索</h1>
+      <p class="page-lead">
+        タイトルのキーワード、配信期間、出演者を組み合わせて検索できます。
+      </p>
+    </header>
+
+    <form id="withxmeets-search-form" class="withxmeets-search-form">
+      <div class="withxmeets-search-fields">
+        <label class="withxmeets-search-field">
+          <span class="withxmeets-search-label">キーワード</span>
+          <input
+            id="search-keyword"
+            class="withxmeets-search-input"
+            type="search"
+            name="keyword"
+            placeholder="タイトルの一部を入力"
+          />
+        </label>
+
+        <div class="withxmeets-search-period">
+          <label class="withxmeets-search-field">
+            <span class="withxmeets-search-label">開始日</span>
+            <input
+              id="search-start-date"
+              class="withxmeets-search-input"
+              type="date"
+              name="start"
+            />
+          </label>
+          <label class="withxmeets-search-field">
+            <span class="withxmeets-search-label">終了日</span>
+            <input
+              id="search-end-date"
+              class="withxmeets-search-input"
+              type="date"
+              name="end"
+            />
+          </label>
+        </div>
+      </div>
+
+      <fieldset class="withxmeets-search-members">
+        <legend class="withxmeets-search-label">出演者</legend>
+        <p class="withxmeets-search-help">
+          複数選択した場合は、選択した全員が出演しているWith×MEETSを検索します。
+        </p>
+        <div class="withxmeets-search-member-grid">
+          {
+            members.map((member) => (
+              <label class="withxmeets-search-member">
+                <input type="checkbox" name="member" value={member.data.name} />
+                <span>{member.data.name}</span>
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <div class="withxmeets-search-actions">
+        <button type="submit" class="preview-btn preview-btn-primary">
+          検索
+        </button>
+        <button
+          id="search-reset"
+          type="button"
+          class="preview-btn withxmeets-search-reset"
+        >
+          条件をクリア
+        </button>
+      </div>
+    </form>
+
+    <section
+      class="withxmeets-search-results"
+      aria-labelledby="search-result-title"
+    >
+      <h2 id="search-result-title" class="withxmeets-search-result-title">
+        検索結果
+      </h2>
+      <p id="search-status" class="withxmeets-search-status" aria-live="polite">
+        With×MEETSの検索条件を指定して検索してください
+      </p>
+      <ul id="search-results" class="withxmeets-search-result-list"></ul>
+      <noscript>
+        <p class="withxmeets-search-error">
+          検索機能を利用するにはJavaScriptを有効にしてください。
+        </p>
+      </noscript>
+    </section>
+  </main>
+</Layout>
+
+<script src="../../scripts/withxmeets-search.ts"></script>

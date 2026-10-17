@@ -18,6 +18,18 @@
   --c-state-error: #be1400;
   --c-state-info: #6fcfe0;
 
+  --c-member-kaho: #f8b500; /* 花帆 */
+  --c-member-sayaka: #5383c3; /* さやか */
+  --c-member-kozue: #68be8d; /* 梢 */
+  --c-member-tsuzuri: #ba2636; /* 綴理 */
+  --c-member-rurino: #e7609e; /* 瑠璃乃 */
+  --c-member-megumi: #c8c2c6; /* 慈 */
+  --c-member-ginko: #a2d7dd; /* 吟子 */
+  --c-member-kosuzu: #fad764; /* 小鈴 */
+  --c-member-hime: #9d8de2; /* 姫芽 */
+  --c-member-ceras: #f56455; /* セラス */
+  --c-member-izumi: #1ebecd; /* 泉 */
+
   --font-sans-jp:
     "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui,
     sans-serif;
