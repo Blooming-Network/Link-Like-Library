@@ -5,6 +5,11 @@
   "engines": {
     "node": "22.12.0"
   },
+  "scripts": {
+    "build": "pnpm astro build",
+    "cf:deploy": "node scripts/cloudflare-production.mjs",
+    "cf:preview": "node scripts/cloudflare-preview.mjs"
+  },
   "dependencies": {
     "astro": "^6.1.10"
   },
@@ -24,6 +29,7 @@
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.59.1"
+    "typescript-eslint": "^8.59.1",
+    "wrangler": "4.147.0"
   }
 }
