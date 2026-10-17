@@ -36,3 +36,7 @@ description = "Format files with Prettier"
 [tasks."format:check"]
 run = "pnpm exec prettier --check ."
 description = "Check formatting with Prettier"
+
+[tasks."new:withxmeets"]
+run = "node scripts/new-withxmeets.mjs"
+description = "Generate a new withxmeets article MD file (usage: mise run new:withxmeets <YYYY-MM-DD>)"

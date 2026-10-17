@@ -1,0 +1,167 @@
+/**
+ * With×MEETS コンテンツファイル生成スクリプト
+ *
+ * 使い方:
+ *   mise run new:withxmeets <YYYY-MM-DD>
+ *
+ * scripts/data/withxmeets.json から datetime が指定日付に一致する配信データを抽出し、
+ * src/content/withxmeets/<YYYYMMDD>_<title>.md を生成する。
+ */
+
+import { Console } from "node:console";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { argv, exit, stdout, stderr } from "node:process";
+import { fileURLToPath } from "node:url";
+
+const console = new Console(stdout, stderr);
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = resolve(__dirname, "..");
+
+// 引数チェック
+const dateArg = argv[2];
+
+if (!dateArg) {
+  console.error("エラー: 日付を指定してください。");
+  console.error("  使い方: mise run new:withxmeets <YYYY-MM-DD>");
+  exit(1);
+}
+
+if (!/^\d{4}-\d{2}-\d{2}$/.test(dateArg)) {
+  console.error(
+    "エラー: 日付は YYYY-MM-DD 形式で指定してください。（例: 2023-12-07）",
+  );
+  exit(1);
+}
+
+// マスターデータ読み込み
+const withMeetsData = JSON.parse(
+  readFileSync(resolve(__dirname, "data/withxmeets.json"), "utf-8"),
+);
+const membersData = JSON.parse(
+  readFileSync(resolve(__dirname, "data/members.json"), "utf-8"),
+);
+
+// メンバーID -> 名前 マッピング
+const memberMap = Object.fromEntries(membersData.map((m) => [m.id, m.name]));
+
+// 配信データ探索
+const entries = withMeetsData.filter((e) => e.datetime.startsWith(dateArg));
+
+if (entries.length === 0) {
+  console.error(
+    `エラー: ${dateArg} に対応するエントリが withxmeets.json に見つかりません。`,
+  );
+  exit(1);
+}
+
+// 出力ファイルパス生成
+const fileDate = dateArg.replace(/-/g, ""); // YYYYMMDD
+
+// 同日に複数エントリが存在する場合は datetime 昇順で処理
+const sortedEntries = entries.sort((a, b) =>
+  a.datetime.localeCompare(b.datetime),
+);
+
+const contentDir = resolve(ROOT, "src/content/withxmeets");
+
+// テンプレート読み込み
+const templatePath = resolve(__dirname, "templates/withxmeets.md");
+const template = readFileSync(templatePath, "utf-8");
+
+/**
+ * タイトルをファイル名に使える形にする。
+ * パス区切り・ファイル名に使えない文字を削除する。
+ */
+function sanitizeTitle(title) {
+  return title
+    .replace(/[\\/:*?"<>|]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// 出力先を全エントリ分先に決めて検査する。
+// 書き込みを始めてから途中で失敗し、一部のファイルだけが生成された状態になるのを防ぐ。
+const jobs = sortedEntries.map((entry) => {
+  // ファイル名は YYYYMMDD_title.md（例: 20231207_梢先輩に「気品」を学ぼう！.md）
+  const fileName = `${fileDate}_${sanitizeTitle(entry.title)}.md`;
+  const outputPath = resolve(contentDir, fileName);
+  return { entry, fileName, outputPath };
+});
+
+const errors = [];
+const seenPaths = new Set();
+for (const { fileName, outputPath } of jobs) {
+  if (!outputPath.startsWith(contentDir + "/")) {
+    errors.push(`不正なファイルパスです: ${fileName}`);
+  } else if (seenPaths.has(outputPath)) {
+    errors.push(`同じ日にファイル名が重複するエントリがあります: ${fileName}`);
+  } else if (existsSync(outputPath)) {
+    errors.push(`${outputPath} はすでに存在します。`);
+  }
+  seenPaths.add(outputPath);
+}
+
+if (errors.length > 0) {
+  for (const message of errors) {
+    console.error(`エラー: ${message}`);
+  }
+  console.error("1件も生成せずに終了します。");
+  exit(1);
+}
+
+for (const { entry, fileName, outputPath } of jobs) {
+  // メンバーリスト生成
+  const memberNames = entry.member_ids.map((id) => {
+    const name = memberMap[id];
+    if (!name) {
+      console.warn(`警告: メンバーID ${id} が members.json に見つかりません。`);
+      return String(id);
+    }
+    return name;
+  });
+
+  // プレースホルダー置換
+  const descriptionOneLine = entry.description.replace(/\n/g, " ").trim();
+  const descriptionMultiline = entry.description.trim();
+  // 値を YAML の文字列として書き出す。
+  // タイトルや説明文に " や \ が含まれていても front matter が壊れないよう、
+  // 値を直接テンプレートに埋め込まず、エスケープ済みの "..." 形式に変換する。
+  // JSON の文字列表記は YAML の二重引用符文字列としてもそのまま有効なので、
+  // 変換には JSON.stringify を使う。
+  // 変換結果は引用符を含むため、テンプレート側では値を引用符で囲まない。
+  //   例: 蓮ノ空メンバー"夢"調査！ -> "蓮ノ空メンバー\"夢\"調査！"
+  const yamlString = (value) => JSON.stringify(value);
+  const membersYaml = memberNames
+    .map((name) => `\n  - ${yamlString(name)}`)
+    .join("");
+  const youtubeId = entry.youtube_id || "";
+
+  const replacements = {
+    // データ上のタイトルに前後の空白が含まれる場合があるため除去する
+    "%TITLE%": yamlString(entry.title.trim()),
+    "%DESCRIPTION%": yamlString(descriptionOneLine),
+    "%DATE%": yamlString(dateArg),
+    "%MEMBERS%": membersYaml,
+    "%YOUTUBE_ID%": yamlString(youtubeId),
+    "%DESCRIPTION_MULTILINE%": descriptionMultiline,
+  };
+
+  let output = template;
+  for (const [placeholder, value] of Object.entries(replacements)) {
+    // 置換値を文字列で渡すと "$&" や "$'" が特殊パターンとして解釈されるため、
+    // 関数で返して値をそのまま挿入する。
+    output = output.replaceAll(placeholder, () => value);
+  }
+
+  if (!youtubeId) {
+    output = output.replace(/^youtubeId: ""\n/m, "");
+  }
+
+  // ファイル出力
+  writeFileSync(outputPath, output, "utf-8");
+  console.log(
+    `出力成功: src/content/withxmeets/${fileName} ${entry.title.trim()}`,
+  );
+}
