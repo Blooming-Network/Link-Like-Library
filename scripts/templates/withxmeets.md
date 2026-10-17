@@ -1,7 +1,7 @@
 ---
-title: "%TITLE%"
-description: "%DESCRIPTION%"
-date: "%DATE%"
+title: %TITLE%
+description: %DESCRIPTION%
+date: %DATE%
 members: %MEMBERS%
-youtubeId: "%YOUTUBE_ID%"
+youtubeId: %YOUTUBE_ID%
 ---

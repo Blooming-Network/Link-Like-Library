@@ -109,15 +109,25 @@ for (const entry of sortedEntries) {
   // プレースホルダー置換
   const descriptionOneLine = entry.description.replace(/\n/g, " ").trim();
   const descriptionMultiline = entry.description.trim();
-  const membersYaml = memberNames.map((name) => `\n  - "${name}"`).join("");
+  // 値を YAML の文字列として書き出す。
+  // タイトルや説明文に " や \ が含まれていても front matter が壊れないよう、
+  // 値を直接テンプレートに埋め込まず、エスケープ済みの "..." 形式に変換する。
+  // JSON の文字列表記は YAML の二重引用符文字列としてもそのまま有効なので、
+  // 変換には JSON.stringify を使う。
+  // 変換結果は引用符を含むため、テンプレート側では値を引用符で囲まない。
+  //   例: 蓮ノ空メンバー"夢"調査！ -> "蓮ノ空メンバー\"夢\"調査！"
+  const yamlString = (value) => JSON.stringify(value);
+  const membersYaml = memberNames
+    .map((name) => `\n  - ${yamlString(name)}`)
+    .join("");
   const youtubeId = entry.youtube_id || "";
 
   const replacements = {
-    "%TITLE%": entry.title,
-    "%DESCRIPTION%": descriptionOneLine,
-    "%DATE%": dateArg,
+    "%TITLE%": yamlString(entry.title),
+    "%DESCRIPTION%": yamlString(descriptionOneLine),
+    "%DATE%": yamlString(dateArg),
     "%MEMBERS%": membersYaml,
-    "%YOUTUBE_ID%": youtubeId,
+    "%YOUTUBE_ID%": yamlString(youtubeId),
     "%DESCRIPTION_MULTILINE%": descriptionMultiline,
   };
 
