@@ -133,7 +133,9 @@ for (const entry of sortedEntries) {
 
   let output = template;
   for (const [placeholder, value] of Object.entries(replacements)) {
-    output = output.replaceAll(placeholder, value);
+    // 置換値を文字列で渡すと "$&" や "$'" が特殊パターンとして解釈されるため、
+    // 関数で返して値をそのまま挿入する。
+    output = output.replaceAll(placeholder, () => value);
   }
 
   if (!youtubeId) {
