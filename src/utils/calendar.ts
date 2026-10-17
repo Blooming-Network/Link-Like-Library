@@ -41,6 +41,10 @@ export function getJstDateParts(date: Date): CalendarMonth & { day: number } {
   };
 }
 
+export function getAgeOnBirthday(birthday: Date, year: number): number {
+  return year - getJstDateParts(birthday).year;
+}
+
 export function formatMonth(month: number): string {
   return String(month).padStart(2, "0");
 }

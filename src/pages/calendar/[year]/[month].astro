@@ -6,6 +6,7 @@ import {
   createCalendarDays,
   formatMonth,
   getAdjacentMonth,
+  getAgeOnBirthday,
   getCalendarMonths,
   getCalendarPath,
   getJstDateParts,
@@ -13,7 +14,10 @@ import {
 } from "../../../utils/calendar";
 
 export async function getStaticPaths() {
-  const entries = await getCollection("withxmeets");
+  const [entries, members] = await Promise.all([
+    getCollection("withxmeets"),
+    getCollection("members"),
+  ]);
 
   return getCalendarMonths().map(({ year, month }) => ({
     params: { year: String(year), month: formatMonth(month) },
@@ -24,12 +28,17 @@ export async function getStaticPaths() {
         const date = getJstDateParts(entry.data.date);
         return date.year === year && date.month === month;
       }),
+      members: members
+        .filter(
+          (member) => getJstDateParts(member.data.birthday).month === month,
+        )
+        .sort((a, b) => a.data.order - b.data.order),
     },
   }));
 }
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
-const { year, month, entries } = Astro.props as Props;
+const { year, month, entries, members } = Astro.props as Props;
 const previousMonth = getAdjacentMonth(year, month, -1);
 const nextMonth = getAdjacentMonth(year, month, 1);
 const calendarDays = createCalendarDays(year, month);
@@ -38,11 +47,15 @@ const entriesByDay = Map.groupBy(
   entries,
   (entry) => getJstDateParts(entry.data.date).day,
 );
+const birthdaysByDay = Map.groupBy(
+  members,
+  (member) => getJstDateParts(member.data.birthday).day,
+);
 ---
 
 <Layout
   title={`${year}年${month}月のカレンダー`}
-  description={`${year}年${month}月のWith x Meetsの記事カレンダーです。`}
+  description={`${year}年${month}月のWith x Meetsの記事とメンバーの誕生日カレンダーです。`}
 >
   <main class="page-shell">
     <header class="page-header calendar-page-header">
@@ -101,6 +114,15 @@ const entriesByDay = Map.groupBy(
                   {calendarDay.day}
                 </time>
                 <div class="calendar-day-entries">
+                  {(birthdaysByDay.get(calendarDay.day) ?? []).map((member) => (
+                    <a
+                      href={`/members/${member.id}`}
+                      class="calendar-entry-link calendar-birthday-link"
+                    >
+                      <span aria-hidden="true">🎂</span> {member.data.name}{" "}
+                      {getAgeOnBirthday(member.data.birthday, year)}歳
+                    </a>
+                  ))}
                   {(entriesByDay.get(calendarDay.day) ?? []).map((entry) => (
                     <a
                       href={`/withxmeets/${entry.id}`}
