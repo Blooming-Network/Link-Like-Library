@@ -72,11 +72,11 @@ const template = readFileSync(templatePath, "utf-8");
 
 /**
  * タイトルをファイル名に使える形にする。
- * パス区切り・ファイル名に使えない文字を "_" に置換する。
+ * パス区切り・ファイル名に使えない文字を削除する。
  */
 function sanitizeTitle(title) {
   return title
-    .replace(/[\\/:*?"<>|]/g, "_")
+    .replace(/[\\/:*?"<>|]/g, "")
     .replace(/\s+/g, " ")
     .trim();
 }
