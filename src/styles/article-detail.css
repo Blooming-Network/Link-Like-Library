@@ -111,6 +111,10 @@
   margin: 0 0 14px;
 }
 
+.article-body > p {
+  text-indent: 1em;
+}
+
 .article-body strong {
   color: var(--c-text-brand);
   font-weight: 700;
