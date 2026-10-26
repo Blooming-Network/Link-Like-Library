@@ -75,11 +75,20 @@ Zed の拡張機能から **Astro** をインストールすること。
 | フォーマット         | `mise run format`       | `pnpm exec prettier --write .` |
 | フォーマットチェック | `mise run format:check` | `pnpm exec prettier --check .` |
 
+## コンテンツ作成コマンド
+
+| 用途                              | mise                                   |
+| :-------------------------------- | :------------------------------------- |
+| With×MEETS コンテンツファイル生成 | `mise run new:withxmeets <YYYY-MM-DD>` |
+
 ## プロジェクト構成
 
-```
+```plaintext
 link-like-library/
 ├── public/            # 静的アセット
+├── scripts/           # コンテンツファイル生成スクリプト
+│   ├── data/          # マスターデータ
+│   └── templates/     # テンプレート
 ├── src/
 │   ├── assets/        # 画像などのアセット
 │   ├── components/    # Astroコンポーネント
