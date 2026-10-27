@@ -88,4 +88,20 @@ const news = defineCollection({
   }),
 });
 
-export const collections = { activities, withxmeets, members, features, news };
+const legals = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/legal" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional().default(""),
+    updatedAt: z.coerce.date().optional(),
+  }),
+});
+
+export const collections = {
+  activities,
+  withxmeets,
+  members,
+  features,
+  news,
+  legals,
+};
