@@ -1,0 +1,56 @@
+---
+import type { InferGetStaticPropsType } from "astro";
+import { getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("legals");
+
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+const { entry } = Astro.props as Props;
+const { Content } = await render(entry);
+
+const formattedUpdatedAt = entry.data.updatedAt?.toLocaleDateString("ja-JP", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<Layout title={entry.data.title} description={entry.data.description}>
+  <main class="page-shell">
+    <header class="article-header">
+      <nav class="breadcrumb" aria-label="パンくずリスト">
+        <a href="/">ホーム</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>{entry.data.title}</span>
+      </nav>
+      <h1 class="article-h1">{entry.data.title}</h1>
+      {
+        entry.data.description && (
+          <p class="article-lead">{entry.data.description}</p>
+        )
+      }
+      {
+        entry.data.updatedAt && (
+          <div class="article-meta">
+            <span>最終更新：</span>
+            <time datetime={entry.data.updatedAt.toISOString()}>
+              {formattedUpdatedAt}
+            </time>
+          </div>
+        )
+      }
+    </header>
+
+    <article class="article-body">
+      <Content />
+    </article>
+  </main>
+</Layout>

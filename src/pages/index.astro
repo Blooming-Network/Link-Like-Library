@@ -2,7 +2,12 @@
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 
-const news = (await getCollection("news"))
+let [news, legals] = await Promise.all([
+  getCollection("news"),
+  getCollection("legals"),
+]);
+
+news = news
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 4);
 
@@ -105,6 +110,20 @@ const categories = [
           </div>
         </a>
       </div>
+    </section>
+    <section class="legal-links-section" aria-labelledby="legal-links-title">
+      <h2 id="legal-links-title" class="legal-links-title">サイトポリシー</h2>
+      <ul class="legal-link-list">
+        {
+          legals.map((entry) => (
+            <li>
+              <a class="legal-link" href={`/legal/${entry.id}`}>
+                <span>{entry.data.title}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </section>
   </main>
 </Layout>
